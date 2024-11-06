@@ -41,3 +41,20 @@ func (b *Broker) Subscribe(topic string) *Subscriber {
 
 	return subscriber
 }
+
+// This method takes the slice of subscribers of x topic and closes its Channel and removes it form the slice of subs.
+func (b *Broker) Unsubscribe(topic string, subscriber *Subscriber) {
+	b.mutex.Lock()
+	defer b.mutex.Unlock()
+
+	if subscribers, found := b.subscribers[topic]; found {
+		for i, sub := range subscribers {
+			if sub == subscriber {
+				close(sub.Channel)
+				b.subscribers[topic] = append(subscribers[:i], subscribers[i:]...)
+				return
+			}
+		}
+	}
+
+}
