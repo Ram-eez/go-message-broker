@@ -72,7 +72,6 @@ func (b *Broker) Publish(topic string, payload interface{}) {
 			case sub.Channel <- payload:
 			case <-time.After(time.Second):
 				fmt.Printf("Subscriber slow. Unsubscribing from topic: %s\n", topic)
-				b.Unsubscribe(topic, sub)
 			}
 		}
 	}

@@ -30,7 +30,7 @@ func main() {
 	broker.Publish("thenews", "doge is gay")
 
 	time.Sleep(time.Second)
-	// broker.Unsubscribe("thenews", subscriber)
+	broker.Unsubscribe("thenews", subscriber)
 
 	broker.Publish("thenews", "doge is not gay")
 	time.Sleep(time.Second)
