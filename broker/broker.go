@@ -10,7 +10,7 @@ type Message struct {
 
 // This represents the cilent(us only, no multiple clients). This client will sub to various topics.
 type Subscriber struct {
-	Channel     chan interface{}
+	Channel     chan interface{} // The channel here will have all the messages (payloads) which the user is subbed to.
 	Unsubscribe chan bool
 }
 
@@ -27,6 +27,17 @@ func NewBroker() *Broker {
 	}
 }
 
-// func (b *Broker) Subscribe(topic string) *Subscriber {
+// This method locks the mutex then makes the subscriber instance and finally appends the subscriber to the topic and unlocks the mutex.
+func (b *Broker) Subscribe(topic string) *Subscriber {
+	b.mutex.Lock()
+	defer b.mutex.Unlock()
 
-// }
+	subscriber := &Subscriber{
+		Channel:     make(chan interface{}, 1),
+		Unsubscribe: make(chan bool),
+	}
+
+	b.subscribers[topic] = append(b.subscribers[topic], subscriber)
+
+	return subscriber
+}
